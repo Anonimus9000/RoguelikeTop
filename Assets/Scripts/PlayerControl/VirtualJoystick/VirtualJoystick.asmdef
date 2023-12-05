@@ -1,0 +1,20 @@
+{
+    "name": "VirtualJoystick",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d2c2a46a0d90235499c918e745939b1c",
+        "GUID:0cad11bbed1d3fb4998766362a1404e9",
+        "GUID:84651a3751eca9349aac36a66bba901b",
+        "GUID:a649dfdd7ec849148a9a050cb8705d74",
+        "GUID:a408f9cc31a07d349a28ae5c495590c4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
