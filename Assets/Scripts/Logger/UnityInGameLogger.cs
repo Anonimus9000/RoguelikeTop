@@ -24,5 +24,10 @@ public class UnityInGameLogger : IInGameLogger
     {
         Debug.LogException(exception);
     }
+
+    public void Dispose()
+    {
+        
+    }
 }
 }

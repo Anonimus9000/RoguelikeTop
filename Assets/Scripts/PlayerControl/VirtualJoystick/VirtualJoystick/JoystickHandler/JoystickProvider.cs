@@ -26,6 +26,7 @@ public class JoystickProvider : IJoystickProvider
     private readonly IUIContext _uiContext;
     private IJoystickPresenter _joystickPresenter;
 
+    //todo: inject joystick presenter from constructor
     public JoystickProvider(IUIContext uiContext, IResourceLoader resourceLoader)
     {
         _axisListeners = new List<Action<JoystickAxis>>(ListenersCapacity);
@@ -79,7 +80,7 @@ public class JoystickProvider : IJoystickProvider
         var joystickView = viewObject.GetComponent<IJoystickView>();
         var joystickModel = new JoystickModel();
         
-        _joystickPresenter = new JoystickPresenter(_uiContext, joystickView, joystickModel);
+        _joystickPresenter = new JoystickPresenter(joystickView, joystickModel);
         _joystickPresenter.AxisChanged += OnJoystickAxisChanged;
         _compositeDisposable.AddDisposable(_joystickPresenter);
     }

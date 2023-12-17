@@ -1,11 +1,12 @@
-﻿using MVP;
-using PlayerControl.PlayerMovement.BaseMVP;
+﻿using PlayerControl.PlayerMovement.BaseMVP;
 using UnityEngine;
 
 namespace PlayerControl.PlayerMovement
 {
 public class PlayerMovementView : MonoBehaviour, IPlayerMovementView
 {
+    public Transform Transform => transform;
+    
     private IPlayerMovementPresenter _presenter;
 
     public void Initialize(IPlayerMovementPresenter presenter)
@@ -15,7 +16,7 @@ public class PlayerMovementView : MonoBehaviour, IPlayerMovementView
 
     public void Dispose()
     {
-        // TODO release managed resources here
+        Destroy(gameObject);
     }
 }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Logger;
 using Unity.Plastic.Newtonsoft.Json;
@@ -15,40 +14,40 @@ namespace LocalSaveSystem.UnityLocalSaveSystem
 public class UnityLocalSaveSystem : ILocalSaveSystem
 {
     private const string FileName = "Saves.json";
-    private ISavable[] _savesCash;
+    private readonly ISavable[] _savesCash;
     private Dictionary<string, JObject> _loadedJsonSave;
     private bool _needSaveToStorage;
     private readonly string _storagePath;
     private readonly string _filePath;
     private readonly IInGameLogger _logger;
-    private readonly CancellationTokenSource _cancellationTokenSource;
+    private CancellationTokenSource _cancellationTokenSource;
     #if UNITY_EDITOR
     private static string FilePathDev =>
         Path.Combine(Path.Combine(Application.persistentDataPath, "SaveData"), FileName);
     #endif
 
-    public UnityLocalSaveSystem(string storagePath, IInGameLogger logger, CancellationToken token,
-        int autoSavePeriodPerSeconds = 10)
+    public UnityLocalSaveSystem(string storagePath, ISavable[] savables, IInGameLogger logger, int autoSavePeriodPerSeconds = 10)
     {
         _storagePath = storagePath;
         _logger = logger;
-        _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
+        _savesCash = savables;
+        _cancellationTokenSource = new CancellationTokenSource();
         _filePath = Path.Combine(_storagePath, FileName);
 
         SubscribeOnEvents();
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         StartAutoSaveData(autoSavePeriodPerSeconds, _cancellationTokenSource.Token);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
     }
 
-    public void InitializeSaves(ISavable[] savables)
+    public void InitializeSaves()
     {
-        _savesCash = savables;
         _loadedJsonSave = LoadJsonSave();
         ParseSavesFromStorage();
     }
 
-    public async UniTaskVoid InitializeSavesAsync(ISavable[] savables, CancellationToken cancellationToken)
+    public async UniTask InitializeSavesAsync(CancellationToken cancellationToken)
     {
-        _savesCash = savables;
         _loadedJsonSave = await LoadJsonSave(cancellationToken);
         ParseSavesFromStorage();
     }
@@ -244,6 +243,7 @@ public class UnityLocalSaveSystem : ILocalSaveSystem
     public void ForceUpdateStorageSaves()
     {
         _cancellationTokenSource.Cancel();
+        _cancellationTokenSource = new CancellationTokenSource();
         SaveAll();
     }
 
@@ -404,6 +404,16 @@ public class UnityLocalSaveSystem : ILocalSaveSystem
         {
             Directory.CreateDirectory(_storagePath);
         }
+    }
+
+    public void Dispose()
+    {
+        if (!_cancellationTokenSource.IsCancellationRequested)
+        {
+            _cancellationTokenSource.Cancel();
+        }
+        
+        _cancellationTokenSource?.Dispose();
     }
 }
 }

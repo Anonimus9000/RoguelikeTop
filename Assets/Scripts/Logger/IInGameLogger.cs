@@ -2,7 +2,7 @@
 
 namespace Logger
 {
-public interface IInGameLogger
+public interface IInGameLogger : IDisposable
 {
     public void Log(string message);
     public void LogError(string message);

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using Object = UnityEngine.Object;
 
 namespace ResourceLoader.AddressableResourceLoader
 {
@@ -80,6 +81,27 @@ public class AddressableResourceLoader : IResourceLoader
         _loadedResources.Add(operationHandle);
 
         return loadedResource;
+    }
+
+    public async UniTask<TComponent> LoadResourceAsync<TComponent>(string resourceId, Transform parent, CancellationToken token)
+    {
+        var operationHandle = Addressables.LoadAssetAsync<GameObject>(resourceId);
+
+        while (operationHandle.Status != AsyncOperationStatus.Succeeded)
+        {
+            await UniTask.Yield();
+
+            if (token.IsCancellationRequested)
+            {
+                return default;
+            }
+        }
+        
+        _loadedResources.Add(operationHandle);
+        var prefab = operationHandle.Result;
+        var component = Object.Instantiate(prefab, parent).GetComponent<TComponent>();
+
+        return component;
     }
 
     public void ReleaseResource<TResource>(TResource resource)

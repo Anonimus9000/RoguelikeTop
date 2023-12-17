@@ -33,6 +33,7 @@ public class UnityTickHandler : ITickHandler
         _updateListeners.Clear();
         _lateUpdateListeners.Clear();
         _physicsListeners.Clear();
+        _dispatcher.Dispose();
     }
 
     public void SubscribeOnFrameUpdate(Action<float> listener)

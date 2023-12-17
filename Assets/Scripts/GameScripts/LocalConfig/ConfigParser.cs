@@ -1,7 +1,7 @@
 ﻿using Config;
 using Config.Parser;
 
-namespace GameScripts.Config
+namespace GameScripts.LocalConfig
 {
 public class ConfigParser : IConfigParser<SoConfig>
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Logger;
@@ -39,10 +40,10 @@ public class AddressablesSceneSwitcher : ISceneSwitcher
         return sceneContext;
     }
 
-    public async UniTask<TContext> SwitchToSceneAsync<TContext>(string sceneId,
+    public async UniTask<TContext> SwitchToSceneAsync<TContext>(string sceneId, CancellationToken token,
         LoadSceneMode sceneMode = LoadSceneMode.Single) where TContext : ISceneContext
     {
-        var sceneInstance = await Addressables.LoadSceneAsync(sceneId, sceneMode).ToUniTask();
+        var sceneInstance = await Addressables.LoadSceneAsync(sceneId, sceneMode).ToUniTask(cancellationToken: token);
 
         var rootGameObjects = sceneInstance.Scene.GetRootGameObjects();
         var sceneContext = GetSceneContext<TContext>(rootGameObjects, sceneId);

@@ -1,6 +1,6 @@
 ﻿using Config;
 
-namespace GameScripts.Config
+namespace GameScripts.LocalConfig
 {
 public class Config : IConfig
 {

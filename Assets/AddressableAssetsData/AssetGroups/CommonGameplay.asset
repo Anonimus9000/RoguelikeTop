@@ -16,7 +16,17 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 1f18ffb16397ffd4d9d0c4a1d5814334
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 13c4ebabf8321ba4e8384f124b95e7db
+    m_Address: VirtualJoystickView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35ff3560e358ccd4ba898ab71d599149
+    m_Address: CameraMovmentView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 10554e2b9994a50498ab6535f258d145, type: 2}
   m_SchemaSet:

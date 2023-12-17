@@ -1,7 +1,6 @@
 ﻿using Config;
 using DG.Tweening;
 using Logger;
-using MVP;
 using PlayerControl.CameraControl.CameraMovement.Base;
 using PlayerControl.CameraControl.ConfigImage;
 using TickHandler;

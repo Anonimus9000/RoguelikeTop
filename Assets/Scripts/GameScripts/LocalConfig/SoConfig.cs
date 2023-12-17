@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace GameScripts.Config
+namespace GameScripts.LocalConfig
 {
 public class SoConfig : ScriptableObject
 {

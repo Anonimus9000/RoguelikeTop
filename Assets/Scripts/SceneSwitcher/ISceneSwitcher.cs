@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine.SceneManagement;
@@ -13,7 +14,7 @@ public interface ISceneSwitcher : IDisposable
     public TContext SwitchToScene<TContext>(string sceneId,
         LoadSceneMode sceneMode = LoadSceneMode.Single) where TContext : ISceneContext;
 
-    public UniTask<TContext> SwitchToSceneAsync<TContext>(string sceneId,
+    public UniTask<TContext> SwitchToSceneAsync<TContext>(string sceneId, CancellationToken token,
         LoadSceneMode sceneMode = LoadSceneMode.Single) where TContext : ISceneContext;
 
     public void OnSceneStartedToSwitch(string sceneId);

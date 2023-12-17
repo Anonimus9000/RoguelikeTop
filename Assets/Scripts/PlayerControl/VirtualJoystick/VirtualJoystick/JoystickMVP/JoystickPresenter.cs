@@ -3,7 +3,6 @@ using MVP;
 using MVP.Disposable;
 using PlayerControl.VirtualJoystick.Images.Joystick;
 using PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP.Base;
-using UIContext;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -15,13 +14,11 @@ public class JoystickPresenter : IJoystickPresenter
     
     private readonly IJoystickView _view;
     private readonly IJoystickModel _model;
-    private readonly IUIContext _uiContext;
     private readonly ICompositeDisposable _compositeDisposable;
 
-    public JoystickPresenter(IUIContext uiContext, IJoystickView joystickView, IJoystickModel joystickModel)
+    public JoystickPresenter(IJoystickView joystickView, IJoystickModel joystickModel)
     {
         _compositeDisposable = new CompositeDisposable();
-        _uiContext = uiContext;
         _view = joystickView;
         _view.Initialize(this);
         _model = joystickModel;
