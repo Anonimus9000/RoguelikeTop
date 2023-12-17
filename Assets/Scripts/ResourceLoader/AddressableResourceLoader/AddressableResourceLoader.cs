@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -21,7 +22,7 @@ public class AddressableResourceLoader : IResourceLoader
         _loadedResources.Clear();
     }
 
-    public async Task PreloadInCash<TResource>(string resourceId)
+    public async UniTask PreloadInCash<TResource>(string resourceId)
     {
         await LoadResourceAsync<TResource>(resourceId);
     }
@@ -61,13 +62,13 @@ public class AddressableResourceLoader : IResourceLoader
         asyncOperationHandle.Completed += onComplete;
     }
 
-    public async Task<TResource> LoadResourceAsync<TResource>(string resourceId, CancellationToken token = default)
+    public async UniTask<TResource> LoadResourceAsync<TResource>(string resourceId, CancellationToken token = default)
     {
         var operationHandle = Addressables.LoadAssetAsync<TResource>(resourceId);
 
         while (operationHandle.Status != AsyncOperationStatus.Succeeded)
         {
-            await Task.Yield();
+            await UniTask.Yield();
 
             if (token.IsCancellationRequested)
             {
