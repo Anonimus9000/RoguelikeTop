@@ -1,12 +1,12 @@
 ﻿using System.Threading;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 namespace LocalSaveSystem
 {
 public interface ILocalSaveSystem
 {
     public void InitializeSaves(ISavable[] savables);
-    public Task InitializeSavesAsync(ISavable[] savables, CancellationToken cancellationToken);
+    public UniTaskVoid InitializeSavesAsync(ISavable[] savables, CancellationToken cancellationToken);
     public bool IsHaveSave<T>() where T : ISavable;
     public bool IsHaveSaveInt(string id);
     public bool IsHaveSaveFloat(string id);

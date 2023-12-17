@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Logger;
 using Unity.Plastic.Newtonsoft.Json;
 using Unity.Plastic.Newtonsoft.Json.Linq;
@@ -45,7 +46,7 @@ public class UnityLocalSaveSystem : ILocalSaveSystem
         ParseSavesFromStorage();
     }
 
-    public async Task InitializeSavesAsync(ISavable[] savables, CancellationToken cancellationToken)
+    public async UniTaskVoid InitializeSavesAsync(ISavable[] savables, CancellationToken cancellationToken)
     {
         _savesCash = savables;
         _loadedJsonSave = await LoadJsonSave(cancellationToken);
@@ -295,13 +296,13 @@ public class UnityLocalSaveSystem : ILocalSaveSystem
         UnsubscribeOnEvents();
     }
 
-    private async void StartAutoSaveData(int periodPerSeconds, CancellationToken token)
+    private async UniTaskVoid StartAutoSaveData(int periodPerSeconds, CancellationToken token)
     {
         var periodPerMillisecond = periodPerSeconds * 1000;
 
         try
         {
-            await Task.Run(async () =>
+            await UniTask.RunOnThreadPool(async () =>
             {
                 while (true)
                 {
@@ -310,7 +311,7 @@ public class UnityLocalSaveSystem : ILocalSaveSystem
                         return;
                     }
                     
-                    await Task.Delay(periodPerMillisecond, token);
+                    await UniTask.Delay(periodPerMillisecond, cancellationToken: token);
 
                     if (!_needSaveToStorage)
                     {
@@ -321,7 +322,7 @@ public class UnityLocalSaveSystem : ILocalSaveSystem
 
                     _needSaveToStorage = false;
                 }
-            }, token);
+            }, cancellationToken: token);
         }
         catch (Exception e)
         {
@@ -340,7 +341,7 @@ public class UnityLocalSaveSystem : ILocalSaveSystem
         File.WriteAllText(_filePath, json);
     }
 
-    private async Task SaveAllAsync(CancellationToken token)
+    private async UniTask SaveAllAsync(CancellationToken token)
     {
         try
         {
@@ -367,7 +368,7 @@ public class UnityLocalSaveSystem : ILocalSaveSystem
         return JsonConvert.DeserializeObject<Dictionary<string, JObject>>(json);
     }
 
-    private async Task<Dictionary<string, JObject>> LoadJsonSave(CancellationToken token)
+    private async UniTask<Dictionary<string, JObject>> LoadJsonSave(CancellationToken token)
     {
         try
         {
