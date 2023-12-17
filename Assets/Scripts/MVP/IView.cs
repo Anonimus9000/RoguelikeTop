@@ -2,8 +2,8 @@
 
 namespace MVP
 {
-public interface IView : IDisposable
+public interface IView<T> : IDisposable where T : IPresenter
 {
-    protected internal IPresenter Presenter { get; }
+    public void Initialize(T presenter);
 }
 }

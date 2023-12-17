@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVP.Disposable;
-using PlayerControl.Joystick.Images.Joystick;
-using PlayerControl.Joystick.VirtualJoystick.JoystickMVP;
-using PlayerControl.Joystick.VirtualJoystick.JoystickMVP.Base;
+using PlayerControl.VirtualJoystick.Images.Joystick;
+using PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP;
+using PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP.Base;
 using ResourceContainer;
 using ResourceLoader;
 using UIContext;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace PlayerControl.Joystick.VirtualJoystick.JoystickHandler
+namespace PlayerControl.VirtualJoystick.VirtualJoystick.JoystickHandler
 {
 public class JoystickProvider : IJoystickProvider
 {

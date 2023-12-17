@@ -1,4 +1,4 @@
-﻿namespace PlayerControl.Joystick.Images.Joystick
+﻿namespace PlayerControl.VirtualJoystick.Images.Joystick
 {
 public struct JoystickAxis
 {

@@ -1,10 +1,10 @@
 ﻿using System;
 using MVP;
-using PlayerControl.Joystick.Images.Joystick;
+using PlayerControl.VirtualJoystick.Images.Joystick;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace PlayerControl.Joystick.VirtualJoystick.JoystickMVP.Base
+namespace PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP.Base
 {
 public interface IJoystickPresenter : IPresenter
 {

@@ -2,7 +2,7 @@
 
 namespace PlayerControl.PlayerMovement.BaseMVP
 {
-public interface IPlayerMovementView : IView
+public interface IPlayerMovementView : IView<IPlayerMovementPresenter>
 {
     
 }

@@ -6,16 +6,15 @@ using UnityEngine;
 
 namespace PlayerControl.CameraControl.CameraMovement.Base
 {
-public interface ICameraMovementView : IView
+public interface ICameraMovementView : IView<ICameraMovementPresenter>
 {
     public Camera Camera { get; }
     public Transform Transform { get; }
 
-    public void Initialize(
+    public void InitializeDependencies(
         ITickHandler tickHandler,
         IInGameLogger logger,
-        IConfig localConfig,
-        ICameraMovementPresenter presenter);
+        IConfig localConfig);
 
     public void FollowTarget(Transform target);
 

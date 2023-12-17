@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using PlayerControl.Joystick.Images.Joystick;
-using PlayerControl.Joystick.VirtualJoystick.JoystickMVP.Base;
+using PlayerControl.VirtualJoystick.Images.Joystick;
+using PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP.Base;
 
-namespace PlayerControl.Joystick.VirtualJoystick.JoystickHandler
+namespace PlayerControl.VirtualJoystick.VirtualJoystick.JoystickHandler
 {
 public interface IJoystickProvider : IDisposable
 {

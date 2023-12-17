@@ -1,21 +1,18 @@
 ﻿using System;
 using MVP;
 using MVP.Disposable;
-using PlayerControl.Joystick.Images.Joystick;
-using PlayerControl.Joystick.VirtualJoystick.JoystickMVP.Base;
+using PlayerControl.VirtualJoystick.Images.Joystick;
+using PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP.Base;
 using UIContext;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace PlayerControl.Joystick.VirtualJoystick.JoystickMVP
+namespace PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP
 {
 public class JoystickPresenter : IJoystickPresenter
 {
     public event Action<JoystickAxis> AxisChanged;
     
-    IModel IPresenter.Model => _model;
-    IView IPresenter.View => _view;
-
     private readonly IJoystickView _view;
     private readonly IJoystickModel _model;
     private readonly IUIContext _uiContext;

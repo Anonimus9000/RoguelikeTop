@@ -1,8 +1,8 @@
 ﻿using MVP;
-using PlayerControl.Joystick.Images.Joystick;
-using PlayerControl.Joystick.VirtualJoystick.JoystickMVP.Base;
+using PlayerControl.VirtualJoystick.Images.Joystick;
+using PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP.Base;
 
-namespace PlayerControl.Joystick.VirtualJoystick.JoystickMVP
+namespace PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP
 {
 public class JoystickModel : IJoystickModel
 {

@@ -1,10 +1,10 @@
 ﻿using MVP;
-using PlayerControl.Joystick.VirtualJoystick.JoystickMVP.Base;
+using PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP.Base;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace PlayerControl.Joystick.VirtualJoystick.JoystickMVP
+namespace PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP
 {
 public class JoystickView : MonoBehaviour, IJoystickView, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -17,7 +17,6 @@ public class JoystickView : MonoBehaviour, IJoystickView, IBeginDragHandler, IDr
     [SerializeField]
     private RectTransform _parent;
     
-    IPresenter IView.Presenter => _presenter;
     private IJoystickPresenter _presenter;
     private Vector3 _initializeBackgroundPosition;
     private bool _isLocked;

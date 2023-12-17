@@ -14,8 +14,6 @@ public class CameraMovementView : MonoBehaviour, ICameraMovementView
     [SerializeField]
     private Camera _camera;
     
-    IPresenter IView.Presenter => _presenter;
-
     public Camera Camera => _camera;
     public Transform Transform => transform;
     private ICameraMovementPresenter _presenter;
@@ -25,15 +23,18 @@ public class CameraMovementView : MonoBehaviour, ICameraMovementView
     private IConfig _config;
     private Sequence _cinematicMoveCameraSequence;
 
-    public void Initialize(
+    public void InitializeDependencies(
         ITickHandler tickHandler,
         IInGameLogger logger,
-        IConfig localConfig,
-        ICameraMovementPresenter presenter)
+        IConfig localConfig)
     {
         _tickHandler = tickHandler;
         _config = localConfig;
         _logger = logger;
+    }
+
+    public void Initialize(ICameraMovementPresenter presenter)
+    {
         _presenter = presenter;
     }
 

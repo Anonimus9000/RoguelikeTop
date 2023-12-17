@@ -14,8 +14,6 @@ public class CameraMovementPresenter : ICameraMovementPresenter
 {
     public event Action CinematicStarted;
     public event Action CinematicEnded;
-    IModel IPresenter.Model => _model;
-    IView IPresenter.View => _view;
 
     public Camera Camera => _view.Camera;
     public bool CinematicInProcess => _model.CinematicInProcess;
@@ -105,7 +103,8 @@ public class CameraMovementPresenter : ICameraMovementPresenter
 
     private void InitializeView(IConfig config, ITickHandler tickHandler, IInGameLogger logger)
     {
-        _view.Initialize(tickHandler, logger, config, this);
+        _view.InitializeDependencies(tickHandler, logger, config);
+        _view.Initialize(this);
     }
 }
 }

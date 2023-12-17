@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 namespace SceneSwitcher
 {
@@ -10,6 +11,6 @@ public interface IScene : IDisposable
     protected internal ISceneContext SceneContext { get; }
     protected internal ISceneSwitcher SceneSwitcher { get; }
 
-    public Task InitializeAsync(CancellationToken token);
+    public UniTaskVoid InitializeAsync(CancellationToken token);
 }
 }
