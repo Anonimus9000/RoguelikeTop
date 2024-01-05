@@ -11,6 +11,7 @@ public interface IJoystickProvider : IDisposable
     internal List<Action<JoystickAxis>> AxisListeners { get; }
     internal IJoystickPresenter JoystickPresenter { get; }
 
+    public JoystickAxis GetJoystickAxis();
     public void SubscribeOnAxisChanged(Action<JoystickAxis> listener);
     public void UnsubscribeOnAxisChanged(Action<JoystickAxis> listener);
     public void ShowJoystick();

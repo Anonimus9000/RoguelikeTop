@@ -1,7 +1,9 @@
-﻿namespace Config.Parser
+﻿using Config.MainConfig;
+
+namespace Config.Parser
 {
-public interface IConfigParser<T>
+public interface IConfigParser
 {
-    public IConfig ParseConfig(T config);
+    public IConfig ParseConfig();
 }
 }

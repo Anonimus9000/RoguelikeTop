@@ -16,5 +16,9 @@ public class PlayerProvider : IPlayerProvider
     {
         return _playerMovementPresenter.GetTransform();
     }
+
+    public void Dispose()
+    {
+    }
 }
 }

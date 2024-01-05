@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: CommonGameplay
+  m_EditorClassIdentifier: 
+  m_GroupName: CommonGameplay
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 1f18ffb16397ffd4d9d0c4a1d5814334
+  m_SerializeEntries:
+  - m_GUID: 13c4ebabf8321ba4e8384f124b95e7db
+    m_Address: VirtualJoystickView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35ff3560e358ccd4ba898ab71d599149
+    m_Address: CameraMovementView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 10554e2b9994a50498ab6535f258d145, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 2bf2e8769c4aa2246b05deae72aca76d, type: 2}
+    - {fileID: 11400000, guid: c1ffeb4a95d5ee744950827132979582, type: 2}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4494463309684242195}
   - component: {fileID: 358384915679763065}
   - component: {fileID: 6177321395656969567}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HandleBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 1216937886173964762}
   - component: {fileID: 8362983841649078598}
   - component: {fileID: 4381903642549423007}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: JoystickView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   - component: {fileID: 6685703557894289925}
   - component: {fileID: 8881677464503778503}
   - component: {fileID: 6241674385559151500}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

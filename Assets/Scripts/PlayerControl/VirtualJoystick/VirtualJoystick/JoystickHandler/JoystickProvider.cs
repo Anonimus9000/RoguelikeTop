@@ -44,6 +44,11 @@ public class JoystickProvider : IJoystickProvider
         _joystickPresenter.AxisChanged -= OnJoystickAxisChanged;
     }
 
+    public JoystickAxis GetJoystickAxis()
+    {
+        return _joystickPresenter.CurrentAxis;
+    }
+
     public void SubscribeOnAxisChanged(Action<JoystickAxis> listener)
     {
         _axisListeners.Add(listener);

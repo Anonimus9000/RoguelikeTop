@@ -4,6 +4,7 @@ namespace UIContext
 {
 public interface IUIContext
 {
+    public Camera UICamera { get; }
     public RectTransform UIOverlayParent { get; }
 
     public RectTransform PopupsParent { get; }

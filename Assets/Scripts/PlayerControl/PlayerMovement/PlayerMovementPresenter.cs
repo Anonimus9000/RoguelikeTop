@@ -1,6 +1,6 @@
-﻿using System;
-using MVP.Disposable;
+﻿using MVP.Disposable;
 using PlayerControl.PlayerMovement.BaseMVP;
+using PlayerControl.VirtualJoystick.Images.Joystick;
 using PlayerControl.VirtualJoystick.VirtualJoystick.JoystickHandler;
 using TickHandler;
 using UnityEngine;
@@ -48,7 +48,37 @@ public class PlayerMovementPresenter : IPlayerMovementPresenter
 
     private void OnPhysicUpdate(float deltaTime)
     {
-        throw new NotImplementedException();
+        var joystickAxis = _joystickProvider.GetJoystickAxis();
+        var rigidbody = _view.Rigidbody;
+
+        if (AxisIsZero(joystickAxis))
+        {
+            rigidbody.velocity = Vector3.zero;
+            return;
+        }
+        
+        var speed = _model.GetPlayerSpeed();
+        var rotationSpeed = _model.GetPlayerRotationSpeed();
+
+        var movement = new Vector3(joystickAxis.AxisX, 0, joystickAxis.AxisY);
+
+        rigidbody.MovePosition(rigidbody.position + movement * speed * deltaTime);
+        
+        var toRotation = Quaternion.LookRotation(movement, Vector3.up);
+
+        rigidbody.rotation = Quaternion.RotateTowards(rigidbody.rotation, toRotation, rotationSpeed * deltaTime);
+    }
+
+    private bool AxisIsZero(JoystickAxis joystickAxis)
+    {
+        Debug.Log($"x = {joystickAxis.AxisX} | y = {joystickAxis.AxisY}");
+        var axisX = joystickAxis.AxisX;
+        var axisY = joystickAxis.AxisY;
+        var axisXIsZero = Mathf.Abs(axisX) < 0.05f;
+        var axisYIsZero = Mathf.Abs(axisY) < 0.05f;
+        var axisIsZero = axisXIsZero && axisYIsZero;
+        
+        return axisIsZero;
     }
 }
 }

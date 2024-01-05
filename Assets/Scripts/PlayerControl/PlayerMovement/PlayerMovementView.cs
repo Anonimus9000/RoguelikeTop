@@ -5,6 +5,9 @@ namespace PlayerControl.PlayerMovement
 {
 public class PlayerMovementView : MonoBehaviour, IPlayerMovementView
 {
+    [field: SerializeField]
+    public Rigidbody Rigidbody { get; private set; }
+    
     public Transform Transform => transform;
     
     private IPlayerMovementPresenter _presenter;

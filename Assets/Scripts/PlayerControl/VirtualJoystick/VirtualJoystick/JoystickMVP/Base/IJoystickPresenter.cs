@@ -8,7 +8,8 @@ namespace PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP.Base
 {
 public interface IJoystickPresenter : IPresenter
 {
-    public event Action<JoystickAxis> AxisChanged; 
+    public event Action<JoystickAxis> AxisChanged;
+    public JoystickAxis CurrentAxis { get; }
     public void ShowJoystick();
     public void HideJoystick();
     public void LockJoystick();

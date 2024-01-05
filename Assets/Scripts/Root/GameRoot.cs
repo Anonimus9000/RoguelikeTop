@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading;
-using Config;
+using Config.Parser;
 using Cysharp.Threading.Tasks;
+using GameScripts.LocalConfig;
+using GameScripts.LocalConfig.SOConfig;
 using GameScripts.Scenes.TestMovement;
 using LocalSaveSystem;
 using LocalSaveSystem.UnityLocalSaveSystem;
@@ -14,7 +16,6 @@ using TickHandler;
 using TickHandler.UnityTickHandler;
 using UIContext;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Root
 {
@@ -23,8 +24,11 @@ public class GameRoot : MonoBehaviour, IRoot
     [SerializeField]
     private UnityUIContext _unityUIContext;
 
+    [SerializeField]
+    private SoMainConfig _soMainConfig;
+
     private readonly ICompositeDisposable _compositeDisposable = new CompositeDisposable();
-    
+
     private async UniTaskVoid Start()
     {
         DontDestroyOnLoad(_unityUIContext);
@@ -42,21 +46,27 @@ public class GameRoot : MonoBehaviour, IRoot
         var token = Application.exitCancellationToken;
         IInGameLogger logger = new UnityInGameLogger();
         _compositeDisposable.AddDisposable(logger);
-        
+
         ISceneSwitcher sceneSwitcher = new AddressablesSceneSwitcher(logger);
         _compositeDisposable.AddDisposable(sceneSwitcher);
 
         IResourceLoader resourceLoader = new AddressableResourceLoader();
         _compositeDisposable.AddDisposable(resourceLoader);
 
-        IDispatcher dispatcher = new GameObject().AddComponent<UnityDispatcherBehaviour>();
+        var dispatcherObject = new GameObject();
+        dispatcherObject.name = "Dispatcher";
+        DontDestroyOnLoad(dispatcherObject);
+        IDispatcher dispatcher = dispatcherObject.AddComponent<UnityDispatcherBehaviour>();
         ITickHandler tickHandler = new UnityTickHandler(dispatcher);
 
         var saveSystem = await InitializeSaveSystem(logger, token);
 
-        IConfig config = new GameScripts.LocalConfig.Config();
-        
-        IScene startScene = new TestMovementScene(resourceLoader, tickHandler, _unityUIContext, logger, )
+        IConfigParser configParser = new SOConfigParser(_soMainConfig, logger);
+
+        var config = configParser.ParseConfig();
+
+        IScene startScene = new TestMovementScene(resourceLoader, tickHandler, _unityUIContext, logger, config, sceneSwitcher);
+        startScene.SwitchScene(token);
     }
 
     private async UniTask<ILocalSaveSystem> InitializeSaveSystem(IInGameLogger logger, CancellationToken token)
@@ -65,9 +75,9 @@ public class GameRoot : MonoBehaviour, IRoot
         var savables = Array.Empty<ISavable>();
         ILocalSaveSystem localSaveSystem = new UnityLocalSaveSystem(savePath, savables, logger);
         await localSaveSystem.InitializeSavesAsync(token);
-        
+
         _compositeDisposable.AddDisposable(localSaveSystem);
-        
+
         return localSaveSystem;
     }
 }

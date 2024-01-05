@@ -1,5 +1,4 @@
-﻿using MVP;
-using PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP.Base;
+﻿using PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP.Base;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;

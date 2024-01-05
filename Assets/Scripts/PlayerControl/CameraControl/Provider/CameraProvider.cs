@@ -46,6 +46,11 @@ public class CameraProvider : ICameraProvider
         _cameraMovement.ReturnCinematicCamera(onReturnCameraCompleted);
     }
 
+    public void AddCameraInStack(Camera uiCamera)
+    {
+        _cameraMovement.AddCameraInStack(uiCamera);
+    }
+
     private void OnCinematicMovementStarted()
     {
         CinematicStarted?.Invoke();

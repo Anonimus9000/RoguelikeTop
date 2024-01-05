@@ -1,7 +1,9 @@
 ﻿using System.Threading;
-using Config;
+using Config.MainConfig;
 using Cysharp.Threading.Tasks;
+using GameScripts.LocalConfig.Images;
 using GameScripts.Player.Provider;
+using GameScripts.ResourceIdContainer;
 using Logger;
 using MVP.Disposable;
 using PlayerControl.CameraControl.CameraMovement;
@@ -14,13 +16,12 @@ using ResourceLoader;
 using SceneSwitcher;
 using TickHandler;
 using UIContext;
+using UnityEngine;
 
 namespace GameScripts.Scenes.TestMovement
 {
 public class TestMovementScene : IScene
 {
-    private const string PlayerMovementResourceId = "PlayerMovementView";
-    private const string CameraMovementResourceId = "CameraMovementView";
     private readonly IResourceLoader _resourceLoader;
     private readonly ITickHandler _tickHandler;
     private readonly IUIContext _uiContext;
@@ -32,28 +33,35 @@ public class TestMovementScene : IScene
     ISceneSwitcher IScene.SceneSwitcher => _sceneSwitcher;
     
     private TestMovementSceneContext _sceneContext;
-    private ISceneSwitcher _sceneSwitcher;
+    private readonly ISceneSwitcher _sceneSwitcher;
     private readonly ICompositeDisposable _compositeDisposable = new CompositeDisposable();
 
     public TestMovementScene(IResourceLoader resourceLoader,
         ITickHandler tickHandler,
         IUIContext uiContext,
         IInGameLogger logger,
-        IConfig config)
+        IConfig config,
+        ISceneSwitcher sceneSwitcher)
     {
         _resourceLoader = resourceLoader;
         _tickHandler = tickHandler;
         _uiContext = uiContext;
         _logger = logger;
         _config = config;
+        _sceneSwitcher = sceneSwitcher;
     }
     
-    public async UniTaskVoid InitializeAsync(CancellationToken token)
+    public async UniTaskVoid SwitchScene(CancellationToken token)
     {
         _sceneContext = await _sceneSwitcher.SwitchToSceneAsync<TestMovementSceneContext>(SceneId, token);
-        var joystickProvider = await InitializeVirtualJoystick();
-        var cameraProvider = await InitializeCamera(token);
-        var playerProvider = await InitializePlayer(joystickProvider, token);
+        
+        var joystickProvider = await InitializeVirtualJoystickAsync();
+        
+        var cameraProvider = await InitializeCameraAsync(token);
+        var uiCamera = _uiContext.UICamera;
+        cameraProvider.AddCameraInStack(uiCamera);
+        
+        var playerProvider = await InitializePlayerAsync(joystickProvider, token);
 
         var playerTransform = playerProvider.GetPlayerTransform();
         cameraProvider.FollowToTarget(playerTransform);
@@ -64,7 +72,7 @@ public class TestMovementScene : IScene
         _compositeDisposable.Dispose();
     }
 
-    private async UniTask<IJoystickProvider> InitializeVirtualJoystick()
+    private async UniTask<IJoystickProvider> InitializeVirtualJoystickAsync()
     {
         IJoystickProvider joystickProvider = new JoystickProvider(_uiContext, _resourceLoader);
         _compositeDisposable.AddDisposable(joystickProvider);
@@ -72,25 +80,40 @@ public class TestMovementScene : IScene
         return joystickProvider;
     }
 
-    private async UniTask<IPlayerProvider> InitializePlayer(IJoystickProvider joystickProvider, CancellationToken token)
+    private async UniTask<IPlayerProvider> InitializePlayerAsync(IJoystickProvider joystickProvider, CancellationToken token)
     {
-        var playerParent = _sceneContext.PlayerParent;
-        var view = await _resourceLoader.LoadResourceAsync<IPlayerMovementView>(PlayerMovementResourceId, playerParent, token);
-        IPlayerMovementModel model = new PlayerMovementModel();
-        IPlayerMovementPresenter presenter = new PlayerMovementPresenter(view, model, joystickProvider, _tickHandler);
+        var playerImage = _config.GetImage<PlayerImage>();
+        var playerData = new PlayerData(playerImage.MoveSpeed, playerImage.RotationSpeed);
         
-        _compositeDisposable.AddDisposable(presenter);
-
+        var playerParent = _sceneContext.PlayerParent;
+        var playerMovementResourceId = ResourceLoaderIdContainer.PlayerMovementView;
+        var view = await _resourceLoader.LoadResourceAsync<IPlayerMovementView>(playerMovementResourceId, playerParent, token);
+        IPlayerMovementModel model = new PlayerMovementModel(playerData);
+        IPlayerMovementPresenter presenter = new PlayerMovementPresenter(view, model, joystickProvider, _tickHandler);
+        presenter.Initialize();
+        
         IPlayerProvider playerProvider = new PlayerProvider(presenter);
-
+        
+        _compositeDisposable.AddDisposable(presenter, playerProvider);
+        
         return playerProvider;
     }
 
-    private async UniTask<ICameraProvider> InitializeCamera(CancellationToken token)
+    private async UniTask<ICameraProvider> InitializeCameraAsync(CancellationToken token)
     {
-        var view = await _resourceLoader.LoadResourceAsync<ICameraMovementView>(CameraMovementResourceId, _sceneContext.CameraMovementParent, token);
-        ICameraMovementModel model = new CameraMovementModel();
-        ICameraMovementPresenter presenter = new CameraMovementPresenter(view, model, _logger, _tickHandler, _config);
+        var cameraMovementResourceId = ResourceLoaderIdContainer.CameraMovementView;
+        var cameraImage = _config.GetImage<CameraImage>();
+        var cameraData = new CameraData(
+            cameraImage.CinematicMoveToTargetDuration,
+            cameraImage.DelayOnTargetDuration,
+            cameraImage.CameraTargetOffset,
+            cameraImage.CameraSmoothSpeed,
+            cameraImage.CameraFieldOfView);
+        
+        var view = await _resourceLoader.LoadResourceAsync<ICameraMovementView>(cameraMovementResourceId, _sceneContext.CameraMovementParent, token);
+        ICameraMovementModel model = new CameraMovementModel(cameraData);
+        ICameraMovementPresenter presenter = new CameraMovementPresenter(view, model, _logger, _tickHandler);
+        presenter.Initialize();
         _compositeDisposable.AddDisposable(presenter);
 
         ICameraProvider cameraProvider = new CameraProvider(presenter);

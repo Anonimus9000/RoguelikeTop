@@ -1,12 +1,10 @@
 ﻿using System;
-using Config;
 using Logger;
-using MVP;
 using MVP.Disposable;
 using PlayerControl.CameraControl.CameraMovement.Base;
-using PlayerControl.CameraControl.ConfigImage;
 using TickHandler;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace PlayerControl.CameraControl.CameraMovement
 {
@@ -17,11 +15,15 @@ public class CameraMovementPresenter : ICameraMovementPresenter
 
     public Camera Camera => _view.Camera;
     public bool CinematicInProcess => _model.CinematicInProcess;
+    public float CameraSmoothSpeed => _model.CameraData.CameraSmoothSpeed;
+    public float CameraFieldOfView => _model.CameraData.CameraFieldOfView;
+    public Vector3 CameraTargetOffset => _model.CameraData.CameraTargetOffset;
 
     private readonly ICameraMovementView _view;
     private readonly ICameraMovementModel _model;
+    private readonly IInGameLogger _logger;
+    private readonly ITickHandler _tickHandler;
     private readonly ICompositeDisposable _compositeDisposable;
-    private readonly IConfig _config;
     private Action _onMoveCompleted;
     private Action _onReturnCinematicCamera;
 
@@ -29,34 +31,47 @@ public class CameraMovementPresenter : ICameraMovementPresenter
         ICameraMovementView view,
         ICameraMovementModel model,
         IInGameLogger logger,
-        ITickHandler tickHandler,
-        IConfig config)
+        ITickHandler tickHandler)
     {
         _model = model;
+        _logger = logger;
+        _tickHandler = tickHandler;
         _view = view;
         _compositeDisposable = new CompositeDisposable();
-        _config = config;
 
-        InitializeView(config, tickHandler, logger);
         _compositeDisposable.AddDisposable(_view, _model);
+    }
+
+    public void Initialize()
+    {
+        InitializeView(_logger);
+    }
+
+    public void Dispose()
+    {
+        UnsubscribeOnPhysicUpdate();
+
+        _compositeDisposable.Dispose();
     }
 
     public void FollowTarget(Transform target)
     {
         _view.FollowTarget(target);
+        SubscribeOnPhysicUpdate();
     }
 
     public void CinematicMoveToPosition(Vector3 endPosition, Action onMoveCompleted = null)
     {
+        UnsubscribeOnPhysicUpdate();
         _model.OnCinematicStarted();
         CinematicStarted?.Invoke();
         _onMoveCompleted = onMoveCompleted;
 
-        var gameplayCameraImage = _config.GetImage<GameplayCameraImage>();
-        var moveToTargetDuration = gameplayCameraImage.CinematicMoveToTargetDuration;
-        var delayOnTargetDuration = gameplayCameraImage.DelayOnTargetDuration;
-        
-        var cameraTargetOffset = gameplayCameraImage.CameraTargetOffset;
+        var cameraData = _model.CameraData;
+        var moveToTargetDuration = cameraData.CinematicMoveToTargetDuration;
+        var delayOnTargetDuration = cameraData.DelayOnTargetDuration;
+
+        var cameraTargetOffset = cameraData.CameraTargetOffset;
 
         var newPosition = endPosition + _view.Transform.TransformDirection(cameraTargetOffset);
 
@@ -66,10 +81,10 @@ public class CameraMovementPresenter : ICameraMovementPresenter
     public void ReturnCinematicCamera(Action onReturnCameraCompleted = null)
     {
         _onReturnCinematicCamera = onReturnCameraCompleted;
-        
-        var gameplayCameraImage = _config.GetImage<GameplayCameraImage>();
+
         _model.OnCinematicStarted();
-        var delayOnTargetDuration = gameplayCameraImage.DelayOnTargetDuration;
+        var cameraData = _model.CameraData;
+        var delayOnTargetDuration = cameraData.DelayOnTargetDuration;
         _view.ReturnCinematicCamera(delayOnTargetDuration);
     }
 
@@ -77,12 +92,14 @@ public class CameraMovementPresenter : ICameraMovementPresenter
     {
         _onReturnCinematicCamera?.Invoke();
         _onReturnCinematicCamera = null;
-        
+
         _model.OnCinematicEnded();
         if (!_model.CinematicInProcess)
         {
             CinematicEnded?.Invoke();
         }
+
+        SubscribeOnPhysicUpdate();
     }
 
     public void OnCinematicMoveCameraCompleted()
@@ -96,15 +113,35 @@ public class CameraMovementPresenter : ICameraMovementPresenter
         }
     }
 
-    public void Dispose()
+    public void AddCameraInStack(Camera camera)
     {
-        _compositeDisposable.Dispose();
+        var viewCamera = _view.Camera;
+        var universalAdditionalCameraData = viewCamera.GetComponent<UniversalAdditionalCameraData>();
+        if (!universalAdditionalCameraData.cameraStack.Contains(camera))
+        {
+            universalAdditionalCameraData.cameraStack.Add(camera);
+        }
     }
 
-    private void InitializeView(IConfig config, ITickHandler tickHandler, IInGameLogger logger)
+    private void SubscribeOnPhysicUpdate()
     {
-        _view.InitializeDependencies(tickHandler, logger, config);
+        _tickHandler.PhysicUpdate += OnPhysicUpdate;
+    }
+
+    private void UnsubscribeOnPhysicUpdate()
+    {
+        _tickHandler.PhysicUpdate -= OnPhysicUpdate;
+    }
+
+    private void InitializeView(IInGameLogger logger)
+    {
+        _view.InitializeDependencies(logger);
         _view.Initialize(this);
+    }
+
+    private void OnPhysicUpdate(float deltaTime)
+    {
+        _view.OnPhysicUpdate(deltaTime);
     }
 }
 }

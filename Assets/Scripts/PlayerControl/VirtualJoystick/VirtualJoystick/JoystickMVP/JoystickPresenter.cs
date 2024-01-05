@@ -1,5 +1,4 @@
 ﻿using System;
-using MVP;
 using MVP.Disposable;
 using PlayerControl.VirtualJoystick.Images.Joystick;
 using PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP.Base;
@@ -11,7 +10,8 @@ namespace PlayerControl.VirtualJoystick.VirtualJoystick.JoystickMVP
 public class JoystickPresenter : IJoystickPresenter
 {
     public event Action<JoystickAxis> AxisChanged;
-    
+    public JoystickAxis CurrentAxis => _model.CurrentAxis;
+
     private readonly IJoystickView _view;
     private readonly IJoystickModel _model;
     private readonly ICompositeDisposable _compositeDisposable;
@@ -30,7 +30,7 @@ public class JoystickPresenter : IJoystickPresenter
         _view.Dispose();
         _compositeDisposable.Dispose();
     }
-    
+
     public void ShowJoystick()
     {
         _model.UpdateActiveState(true);
@@ -68,7 +68,6 @@ public class JoystickPresenter : IJoystickPresenter
 
     public void OnDrag(PointerEventData eventData)
     {
-        
     }
 
     public void OnEndDrag(PointerEventData eventData)

@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace GameScripts.Player.Provider
 {
-public interface IPlayerProvider
+public interface IPlayerProvider : IDisposable
 {
     public Transform GetPlayerTransform();
 }

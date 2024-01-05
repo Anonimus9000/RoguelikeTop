@@ -14,5 +14,6 @@ public interface ICameraProvider : IDisposable
     public void PlayCinematicMoveTo(Vector3 endPosition, Action onMoveCompleted = null);
     public void FollowToTarget(Transform target);
     public void ReturnCinematicCamera(Action onReturnCameraCompleted = null);
+    public void AddCameraInStack(Camera uiCamera);
 }
 }
